@@ -2,6 +2,12 @@
 
 **Ton fidèle assistant anti-gaspi pour le frigo !**
 
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Pre-commit: enabled](https://img.shields.io/badge/pre--commit-enabled-brightgreen)
+![Python](https://img.shields.io/badge/python-3.11+-blue)
+![Streamlit](https://img.shields.io/badge/Made%20with-Streamlit-ff4b4b)
+![Status](https://img.shields.io/badge/status-in%20progress-orange)
+
 ---
 
 ## 🚀 Description
