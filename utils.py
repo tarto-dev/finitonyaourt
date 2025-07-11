@@ -101,13 +101,14 @@ def suggest_multiple_recipes(products: List[str]) -> List[dict]:
     ingredients = ", ".join(products)
     prompt = (
         f"J'ai ces ingrédients dans mon frigo qui vont bientôt expirer : "
-        f"{ingredients}. Propose-moi 5 idées de plats simples et rapides. "
-        "Pour chaque plat, donne :\n"
-        "- Titre: <titre>\n"
-        "- Temps: <temps de préparation>\n"
-        "- Étapes:\n1. ...\n2. ...\n\n"
-        "Sépare chaque plat par la ligne '@@@END@@@'. "
-        "N'ajoute aucun texte en plus après la dernière recette."
+        f"{ingredients}. "
+        "Propose-moi 5 idées de plats simples et rapides. "
+        "Pour chaque plat, donne absolument ces éléments dans ce format précis :\n\n"
+        "Titre: <titre du plat>\n"
+        "Temps: <temps de préparation approximatif>\n"
+        "Étapes:\n1. Première étape\n2. Deuxième étape\n\n"
+        "Sépare chaque recette par la ligne '@@@END@@@'. "
+        "Ne donne aucun texte en plus à la fin et respecte strictement ce format."
     )
 
     try:
@@ -156,16 +157,33 @@ def suggest_multiple_recipes(products: List[str]) -> List[dict]:
 
         steps = lines[steps_idx:]
         steps_cleaned = []
-        for step in steps:
-            step_clean = step.lstrip("1234567890. ").strip()
-            if not step_clean:
-                continue
-            if "bon appétit" in step_clean.lower() or "j'espère" in step_clean.lower():
-                continue
-            steps_cleaned.append(step_clean)
 
+        steps_idx = next(
+            (i for i, line in enumerate(lines) if line.startswith("1.")), None
+        )
+
+        if steps_idx is not None:
+            steps = lines[steps_idx:]
+            for step in steps:
+                step_clean = step.lstrip("1234567890. ").strip()
+                if not step_clean:
+                    continue
+                if (
+                    "bon appétit" in step_clean.lower()
+                    or "j'espère" in step_clean.lower()
+                ):
+                    continue
+                steps_cleaned.append(step_clean)
+
+        # Plus jamais d'erreur : steps_cleaned est toujours défini (même vide)
         if steps_cleaned:
-            suggestions.append({"title": title, "time": time, "steps": steps_cleaned})
+            suggestions.append(
+                {
+                    "title": title,
+                    "time": time,
+                    "steps": steps_cleaned,
+                }
+            )
 
     if not suggestions:
         suggestions.append(

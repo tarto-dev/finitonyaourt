@@ -123,9 +123,15 @@ else:
     st.info("Ton frigo est vide... pour l'instant ! 😋")
 
 # --- 3️⃣ Bouton Ajouter un produit ---
-if st.button("➕ Ajouter un nouveau produit"):
-    st.session_state["show_add_form"] = True
+if "show_add_form" not in st.session_state:
+    st.session_state["show_add_form"] = False
 
+# Si la modale n'est pas ouverte, on affiche le bouton
+if not st.session_state["show_add_form"]:
+    if st.button("➕ Ajouter un nouveau produit"):
+        st.session_state["show_add_form"] = True
+
+# Si la modale est ouverte
 if st.session_state["show_add_form"]:
     with st.expander("Ajouter un produit", expanded=True):
         with st.form("add_product_form", clear_on_submit=True):
@@ -150,3 +156,4 @@ if st.session_state["show_add_form"]:
 
         if st.button("Annuler", key="cancel_add"):
             st.session_state["show_add_form"] = False
+            st.rerun()
