@@ -30,13 +30,34 @@ FiniTonYaourt t'aide à suivre ce qu'il y a dans ton frigo, éviter le gaspillag
 * **OpenAI API** (suggestions recettes)
 * **Open Food Facts API** (infos code-barres)
 * **pyzbar** & **Pillow** (scan image)
-
+* **Docker & docker-compose** (exécution isolée)
 ---
 
-## ⚙️ Installation
+## 🐳 Installation avec Docker
 
 ```bash
-git clone https://github.com/ton-compte/finitonyaourt.git
+git clone https://github.com/tarto-dev/finitonyaourt.git
+cd finitonyaourt
+
+# Builder l'image Docker
+make docker-build
+
+# Lancer l'application
+make docker-up
+
+# Stopper l'application
+make docker-down
+
+# Voir les logs
+make docker-logs
+```
+
+Le projet est accessible sur http://localhost:8501 une fois démarré.
+
+## ⚙️ Installation (sans Docker) 
+
+```bash
+git clone https://github.com/tarto-dev/finitonyaourt.git
 cd finitonyaourt
 python3 -m venv venv
 source venv/bin/activate  # ou venv\Scripts\activate sur Windows
@@ -45,25 +66,29 @@ pip install -r requirements.txt
 
 ---
 
-🔑 Configurer la clé OpenAI
+## 🔑 Configurer la clé OpenAI
 
 Pour utiliser la génération automatique de suggestions recettes (via GPT), tu dois fournir une clé OpenAI.
 
-Comment obtenir une clé ?
+### Comment obtenir une clé ?
 
-1️⃣ Crée un compte sur OpenAI2️⃣ Gère tes clés API depuis ton tableau de bord (section API keys)3️⃣ Copie la clé générée (elle commence généralement par sk-...)
+1️⃣ Crée un compte sur OpenAI  
+2️⃣ Crée tes clés API depuis ton tableau de bord (section API keys)  
+3️⃣ Copie la cléé générée (elle commence généralement par sk-...)  
 
-Comment la configurer dans le projet ?
+### Comment la configurer dans le projet ?
 
 Crée un fichier .env à la racine du projet :
 
+```bash
 OPENAI_API_KEY="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+```
 
 C’est tout ! Le projet détectera automatiquement la clé et affichera le bouton de suggestions si elle est présente.
 
 ---
 
-## ✅ Lancer l'application
+## ✅ Lancer l'application manuellement
 
 ```bash
 streamlit run app.py
