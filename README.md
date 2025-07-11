@@ -8,12 +8,12 @@
 
 FiniTonYaourt t'aide à suivre ce qu'il y a dans ton frigo, éviter le gaspillage et te donne des idées de recettes créatives (grâce à GPT !).
 
-✅ Suivi des produits (quantité, date d'expiration, notes)
-✅ Alertes produits expirant bientôt
-✅ Suggestions de recettes à partir des produits
-✅ Ajout rapide avec **scan de code-barres** (via Open Food Facts)
-✅ Modales modernes pour ajouter ou éditer tes produits
-✅ Mode "Consommé" pour marquer ce que tu as mangé
+✅ Suivi des produits (quantité, date d'expiration, notes)  
+✅ Alertes produits expirant bientôt  
+✅ Suggestions de recettes à partir des produits  
+✅ Ajout rapide avec **scan de code-barres** (via Open Food Facts)  
+✅ Modales modernes pour ajouter ou éditer tes produits  
+✅ Mode "Consommé" pour marquer ce que tu as mangé  
 
 ---
 
