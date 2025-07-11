@@ -152,7 +152,7 @@ if expiring:
     else:
         # 🔒 Clé manquante → message + bouton désactivé
         st.info(
-            "💬 [Clé OPENAI non renseignée](#-configurer-la-clé-openai), "
+            "💬 [Clé OPENAI non renseignée](https://github.com/tarto-dev/finitonyaourt/blob/main/README.md#-configurer-la-clé-openai), "  # noqa: E501
             "fonctionnalités IA désactivées."
         )
         st.button("💡 Proposer 5 idées de plats avec ces produits", disabled=True)
