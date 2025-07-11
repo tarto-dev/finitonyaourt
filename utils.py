@@ -9,7 +9,9 @@ DATA_FILE = Path("data/data.json")
 def load_data() -> List[Dict]:
     """Load products from the JSON file."""
     if not DATA_FILE.exists():
-        return []
+        DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
+        with open(DATA_FILE, "w", encoding="utf-8") as f:
+            json.dump([], f)
 
     try:
         with open(DATA_FILE, "r", encoding="utf-8") as f:
