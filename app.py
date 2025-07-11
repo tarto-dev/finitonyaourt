@@ -29,6 +29,34 @@ if (
 if "show_add_form" not in st.session_state:
     st.session_state["show_add_form"] = False
 
+
+@st.dialog("Ajouter un produit")
+def add_product_dialog():
+    nom = st.text_input("Nom du produit")
+    quantite = st.number_input("Quantité", min_value=1, value=1)
+    date_expiration = st.date_input("Date d'expiration", min_value=datetime.today())
+    notes = st.text_area("Notes (optionnel)", height=80)
+
+    col_submit, col_cancel = st.columns(2)
+
+    with col_submit:
+        if st.button("Ajouter"):
+            add_product(
+                nom=nom,
+                quantite=quantite,
+                date_expiration=date_expiration.strftime("%Y-%m-%d"),
+                notes=notes if notes.strip() else None,
+            )
+            st.success(f"✅ Produit '{nom}' ajouté !")
+            st.session_state["show_add_form"] = False
+            st.rerun()
+
+    with col_cancel:
+        if st.button("Annuler"):
+            st.session_state["show_add_form"] = False
+            st.rerun()
+
+
 # --- 1️⃣ Produits expirés ---
 st.header("⚠️ Produits qui expirent bientôt")
 
@@ -75,7 +103,8 @@ data = load_data()
 
 if data:
     for p in data:
-        col1, col2, col3, col4, col5 = st.columns([3, 2, 2, 1, 1])
+        col1, col2, col3, col4, col5, col6 = st.columns([3, 2, 2, 1, 1, 1])
+
         col1.markdown(f"**{p['nom']}**")
         col2.markdown(f"Quantité : {p['quantite']}")
         col3.markdown(f"Expire le {p['date_expiration']}")
@@ -87,6 +116,11 @@ if data:
 
         if col5.button("✏️", key=f"edit_{p['nom']}"):
             st.session_state["edit_product"] = p["nom"]
+            st.rerun()
+
+        if col6.button("✅", key=f"consume_{p['nom']}"):
+            remove_product(p["nom"])
+            st.success(f"😋 Produit '{p['nom']}' marqué comme consommé !")
             st.rerun()
 
         if st.session_state["edit_product"] == p["nom"]:
@@ -129,7 +163,7 @@ if "show_add_form" not in st.session_state:
 # Si la modale n'est pas ouverte, on affiche le bouton
 if not st.session_state["show_add_form"]:
     if st.button("➕ Ajouter un nouveau produit"):
-        st.session_state["show_add_form"] = True
+        add_product_dialog()
 
 # Si la modale est ouverte
 if st.session_state["show_add_form"]:
