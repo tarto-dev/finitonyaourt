@@ -1,0 +1,12 @@
+-r requirements.txt
+
+black
+flake8
+isort
+mypy
+types-requests
+pre-commit
+pytest
+pytest-cov
+reorder_python_imports
+coverage
