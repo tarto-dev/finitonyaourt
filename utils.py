@@ -10,8 +10,13 @@ def load_data() -> List[Dict]:
     """Load products from the JSON file."""
     if not DATA_FILE.exists():
         return []
-    with open(DATA_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
+
+    try:
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return data
+    except json.JSONDecodeError:
+        return []
 
 
 def save_data(data: List[Dict]) -> None:
