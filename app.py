@@ -2,7 +2,7 @@ from datetime import datetime
 
 import streamlit as st
 
-from utils import add_product, get_expiring_products, load_data
+from utils import add_product, get_expiring_products, load_data, remove_product
 
 st.set_page_config(page_title="FiniTonYaourt", page_icon="🥣", layout="wide")
 
@@ -34,7 +34,15 @@ st.header("Mon frigo actuel 🧊")
 data = load_data()
 
 if data:
-    st.dataframe(data, use_container_width=True)
+    for p in data:
+        col1, col2, col3, col4 = st.columns([3, 2, 2, 1])
+        col1.markdown(f"**{p['nom']}**")
+        col2.markdown(f"Quantité : {p['quantite']}")
+        col3.markdown(f"Expire le {p['date_expiration']}")
+        if col4.button("🗑️", key=f"delete_{p['nom']}"):
+            remove_product(p["nom"])
+            st.success(f"✅ Produit '{p['nom']}' supprimé !")
+            st.rerun()
 else:
     st.info("Ton frigo est vide... pour l'instant ! 😋")
 

@@ -62,3 +62,10 @@ def get_expiring_products(days: int = 3) -> List[Dict]:
             continue
 
     return soon
+
+
+def remove_product(nom: str) -> None:
+    """Remove a product by its name."""
+    data = load_data()
+    new_data = [p for p in data if p["nom"] != nom]
+    save_data(new_data)
