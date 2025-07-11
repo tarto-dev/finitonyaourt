@@ -45,15 +45,21 @@ pip install -r requirements.txt
 
 ---
 
-## 🧰 Configuration
+🔑 Configurer la clé OpenAI
 
-### 🔑 Variables d'environnement
+Pour utiliser la génération automatique de suggestions recettes (via GPT), tu dois fournir une clé OpenAI.
 
-Crée un fichier `.env` à la racine :
+Comment obtenir une clé ?
 
-```env
-OPENAI_API_KEY="sk-xxxxxxxxxxxxxxxxxxxx"
-```
+1️⃣ Crée un compte sur OpenAI2️⃣ Gère tes clés API depuis ton tableau de bord (section API keys)3️⃣ Copie la clé générée (elle commence généralement par sk-...)
+
+Comment la configurer dans le projet ?
+
+Crée un fichier .env à la racine du projet :
+
+OPENAI_API_KEY="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+C’est tout ! Le projet détectera automatiquement la clé et affichera le bouton de suggestions si elle est présente.
 
 ---
 

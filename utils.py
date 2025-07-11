@@ -13,7 +13,6 @@ from pyzbar.pyzbar import decode
 DATA_FILE = Path("data/data.json")
 
 load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 def read_barcode(uploaded_image):
@@ -129,6 +128,13 @@ def suggest_multiple_recipes(products: List[str]) -> List[dict]:
 
     Returns a list of dicts with keys: title, time, and steps.
     """
+
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise ValueError("OPENAI_API_KEY non configurée.")
+
+    client = OpenAI(api_key=api_key)
+
     ingredients = ", ".join(products)
     prompt = (
         f"J'ai ces ingrédients dans mon frigo qui vont bientôt expirer : "

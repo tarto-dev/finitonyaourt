@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 import streamlit as st
@@ -114,6 +115,7 @@ st.subheader("Ton fidèle assistant anti-gaspi pour le frigo !")
 # --- Produits expirés ---
 st.header("⚠️ Produits qui expirent bientôt")
 expiring = get_expiring_products(days=3)
+openai_api_key = os.getenv("OPENAI_API_KEY")
 
 if expiring:
     for p in expiring:
@@ -121,31 +123,39 @@ if expiring:
             f"⏰ {p['nom']} expire le {p['date_expiration']} ! Vite vite vite 💨"
         )
 
-    # --- Suggestions recettes GPT ---
-    if st.button("💡 Proposer 5 idées de plats avec ces produits"):
-        product_names = [p["nom"] for p in expiring]
-        st.session_state["recipes_suggestions"] = suggest_multiple_recipes(
-            product_names
-        )
+    # 🔑 Si clé présente, on affiche le bouton actif
+    if openai_api_key:
+        if st.button("💡 Proposer 5 idées de plats avec ces produits"):
+            product_names = [p["nom"] for p in expiring]
+            st.session_state["recipes_suggestions"] = suggest_multiple_recipes(
+                product_names
+            )
 
-    for i, suggestion in enumerate(st.session_state["recipes_suggestions"]):
-        st.markdown(f"### 🍽️ {suggestion['title']} — ⏱ {suggestion['time']}")
-        if st.button("Plus de détails", key=f"details_{i}"):
-            st.session_state["show_details"] = i
+        for i, suggestion in enumerate(st.session_state["recipes_suggestions"]):
+            st.markdown(f"### 🍽️ {suggestion['title']} — ⏱ {suggestion['time']}")
+            if st.button("Plus de détails", key=f"details_{i}"):
+                st.session_state["show_details"] = i
 
-    if "show_details" in st.session_state:
-        idx = st.session_state["show_details"]
-        with st.expander(
-            f"📄 Détails pour {st.session_state['recipes_suggestions'][idx]['title']}"
-        ):
-            st.markdown("### Étapes")
-            for step_num, step in enumerate(
-                st.session_state["recipes_suggestions"][idx]["steps"], start=1
+        if "show_details" in st.session_state:
+            idx = st.session_state["show_details"]
+            with st.expander(
+                f"📄 Détails pour "
+                f"{st.session_state['recipes_suggestions'][idx]['title']}"
             ):
-                st.markdown(f"{step_num}. {step}")
-            if st.button("Fermer", key="close_modal"):
-                del st.session_state["show_details"]
-
+                st.markdown("### Étapes")
+                for step_num, step in enumerate(
+                    st.session_state["recipes_suggestions"][idx]["steps"], start=1
+                ):
+                    st.markdown(f"{step_num}. {step}")
+                if st.button("Fermer", key="close_modal"):
+                    del st.session_state["show_details"]
+    else:
+        # 🔒 Clé manquante → message + bouton désactivé
+        st.info(
+            "💬 [Clé OPENAI non renseignée](#-configurer-la-clé-openai), "
+            "fonctionnalités IA désactivées."
+        )
+        st.button("💡 Proposer 5 idées de plats avec ces produits", disabled=True)
 else:
     st.success("👌 Aucun produit proche de l'expiration. Bravo chef !")
 
