@@ -8,7 +8,6 @@
 ![Streamlit](https://img.shields.io/badge/Made%20with-Streamlit-ff4b4b)
 ![Status](https://img.shields.io/badge/status-in%20progress-orange)
 ![Docker](https://img.shields.io/badge/docker-ready-blue?logo=docker)
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/tarto-dev/finitonyaourt/main/app.py)
 
 
 ---
