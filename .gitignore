@@ -28,3 +28,6 @@ htmlcov/
 
 # Logs
 *.log
+
+# Frigo local
+data/data.json
