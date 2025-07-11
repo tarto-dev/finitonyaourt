@@ -74,7 +74,7 @@ Pour utiliser la génération automatique de suggestions recettes (via GPT), tu 
 
 1️⃣ Crée un compte sur OpenAI  
 2️⃣ Crée tes clés API depuis ton tableau de bord (section API keys)  
-3️⃣ Copie la cléé générée (elle commence généralement par sk-...)  
+3️⃣ Copie la clé générée (elle commence généralement par sk-...)  
 
 ### Comment la configurer dans le projet ?
 
