@@ -4,13 +4,37 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
+import requests  # type: ignore
 from dotenv import load_dotenv
 from openai import OpenAI
+from PIL import Image
+from pyzbar.pyzbar import decode
 
 DATA_FILE = Path("data/data.json")
 
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+
+def read_barcode(uploaded_image):
+    """Read barcode from an uploaded image file."""
+    image = Image.open(uploaded_image)
+    decoded_objects = decode(image)
+    for obj in decoded_objects:
+        return obj.data.decode("utf-8")
+    return None
+
+
+def get_product_from_barcode(barcode):
+    """Query Open Food Facts and return the product name from a barcode."""
+    url = f"https://world.openfoodfacts.org/api/v0/product/{barcode}.json"
+    res = requests.get(url)
+    if res.status_code == 200:
+        data = res.json()
+        if data["status"] == 1:
+            product = data["product"]
+            return product.get("product_name", "Produit inconnu")
+    return "Produit inconnu"
 
 
 def load_data() -> List[Dict]:
