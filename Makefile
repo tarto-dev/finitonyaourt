@@ -1,53 +1,46 @@
-# 🥣 Makefile — FiniTonYaourt
+.PHONY: help venv install fmt lint type-check docker-build docker-up docker-down docker-logs
 
-# Active l'environnement virtuel (optionnel)
-VENV_ACTIVATE = source venv/bin/activate
-
-# 📜 Help
 help:
 	@echo ""
-	@echo "🍓 FiniTonYaourt — Available commands:"
-	@echo ""
-	@echo "  make install       → Install dependencies from requirements.txt"
-	@echo "  make format        → Format code (black, reorder-imports, isort)"
-	@echo "  make lint          → Run linters (flake8, mypy)"
-	@echo "  make test          → Run tests with pytest"
-	@echo "  make run           → Launch Streamlit app"
-	@echo "  make precommit     → Run pre-commit hooks on all files"
-	@echo "  make check         → Combo: format + lint + precommit"
-	@echo "  make help          → Show this help message"
+	@echo "📄 Commandes disponibles :"
+	@echo "  make venv          → Créer et activer l'environnement virtuel"
+	@echo "  make install       → Installer les dépendances Python"
+	@echo "  make fmt           → Formatter le code (black, isort)"
+	@echo "  make lint          → Lint du code (flake8)"
+	@echo "  make type-check    → Vérifier les types (mypy)"
+	@echo "  make docker-build  → Builder l'image Docker"
+	@echo "  make docker-up     → Lancer l'application (docker-compose)"
+	@echo "  make docker-down   → Stopper l'application"
+	@echo "  make docker-logs   → Voir les logs"
 	@echo ""
 
-# 📦 Install dependencies
+venv:
+	python3 -m venv venv
+	@echo "✅ Venv créé. Active-le avec 'source venv/bin/activate'"
+
 install:
 	pip install -r requirements.txt
+	@echo "✅ Dépendances installées."
 
-# 🧹 Format code
-format:
+fmt:
 	black .
-	reorder-python-imports --exit-zero-even-if-changed -r .
 	isort .
 
-# ✅ Lint code
 lint:
 	flake8 .
+
+type-check:
 	mypy .
 
-# 🧪 Run tests
-test:
-	pytest --cov
+docker-build:
+	docker-compose build
+	@echo "✅ Image Docker buildée."
 
-# 💬 Run Streamlit app
-run:
-	streamlit run app.py
+docker-up:
+	docker-compose up
 
-# ⚡ Run pre-commit hooks
-precommit:
-	pre-commit run --all-files
+docker-down:
+	docker-compose down
 
-# 🔥 Combo
-check:
-	make format
-	make lint
-	make precommit
-
+docker-logs:
+	docker-compose logs -f
