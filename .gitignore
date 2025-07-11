@@ -31,3 +31,4 @@ htmlcov/
 
 # Frigo local
 data/data.json
+.env

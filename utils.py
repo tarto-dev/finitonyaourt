@@ -1,9 +1,16 @@
 import json
+import os
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
+from dotenv import load_dotenv
+from openai import OpenAI
+
 DATA_FILE = Path("data/data.json")
+
+load_dotenv()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 def load_data() -> List[Dict]:
@@ -69,3 +76,104 @@ def remove_product(nom: str) -> None:
     data = load_data()
     new_data = [p for p in data if p["nom"] != nom]
     save_data(new_data)
+
+
+def update_product(
+    nom: str, new_quantite: int, new_date_expiration: str, new_notes: Optional[str]
+) -> None:
+    """Update an existing product by name."""
+    data = load_data()
+    for p in data:
+        if p["nom"] == nom:
+            p["quantite"] = new_quantite
+            p["date_expiration"] = new_date_expiration
+            p["notes"] = new_notes
+            break
+    save_data(data)
+
+
+def suggest_multiple_recipes(products: List[str]) -> List[dict]:
+    """
+    Get 5 recipe ideas using a list of products.
+
+    Returns a list of dicts with keys: title, time, and steps.
+    """
+    ingredients = ", ".join(products)
+    prompt = (
+        f"J'ai ces ingrédients dans mon frigo qui vont bientôt expirer : "
+        f"{ingredients}. Propose-moi 5 idées de plats simples et rapides. "
+        "Pour chaque plat, donne :\n"
+        "- Titre: <titre>\n"
+        "- Temps: <temps de préparation>\n"
+        "- Étapes:\n1. ...\n2. ...\n\n"
+        "Sépare chaque plat par la ligne '@@@END@@@'. "
+        "N'ajoute aucun texte en plus après la dernière recette."
+    )
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "Tu es un assistant cuisine créatif et amusant.",
+                },
+                {
+                    "role": "user",
+                    "content": prompt,
+                },
+            ],
+        )
+        content = response.choices[0].message.content
+    except Exception as e:
+        print("Erreur OpenAI:", e)
+        return []
+
+    suggestions = []
+    blocks = content.split("@@@END@@@")
+    for block in blocks:
+        lines = block.strip().split("\n")
+        if not lines or lines == [""]:
+            continue
+
+        title_line = next((line for line in lines if line.startswith("Titre:")), None)
+        title = (
+            title_line.replace("Titre:", "").strip() if title_line else "Titre inconnu"
+        )
+
+        time_line = next((line for line in lines if line.startswith("Temps:")), None)
+        time = (
+            time_line.replace("Temps:", "").strip()
+            if time_line
+            else "Temps non précisé"
+        )
+
+        steps_idx = next(
+            (i for i, line in enumerate(lines) if line.startswith("1.")), None
+        )
+        if steps_idx is None:
+            continue
+
+        steps = lines[steps_idx:]
+        steps_cleaned = []
+        for step in steps:
+            step_clean = step.lstrip("1234567890. ").strip()
+            if not step_clean:
+                continue
+            if "bon appétit" in step_clean.lower() or "j'espère" in step_clean.lower():
+                continue
+            steps_cleaned.append(step_clean)
+
+        if steps_cleaned:
+            suggestions.append({"title": title, "time": time, "steps": steps_cleaned})
+
+    if not suggestions:
+        suggestions.append(
+            {
+                "title": title,
+                "time": time,
+                "steps": steps_cleaned,
+            }
+        )
+
+    return suggestions
