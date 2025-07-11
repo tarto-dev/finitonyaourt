@@ -57,6 +57,41 @@ def add_product_dialog():
             st.rerun()
 
 
+@st.dialog("Éditer un produit")
+def edit_product_dialog(product):
+    new_nom = st.text_input("Nom du produit", value=product["nom"])
+    new_quantite = st.number_input(
+        "Nouvelle quantité", min_value=1, value=product["quantite"]
+    )
+    new_date_expiration = st.date_input(
+        "Nouvelle date d'expiration",
+        value=datetime.strptime(product["date_expiration"], "%Y-%m-%d"),
+    )
+    new_notes = st.text_area(
+        "Notes", value=product["notes"] if product["notes"] else ""
+    )
+
+    col_submit, col_cancel = st.columns(2)
+
+    with col_submit:
+        if st.button("Valider"):
+            update_product(
+                nom=product["nom"],  # Nom initial pour retrouver l'item
+                new_quantite=new_quantite,
+                new_date_expiration=new_date_expiration.strftime("%Y-%m-%d"),
+                new_notes=new_notes if new_notes.strip() else None,
+                new_nom=new_nom,
+            )
+            st.success(f"✅ Produit '{new_nom}' mis à jour !")
+            st.session_state["edit_product"] = None
+            st.rerun()
+
+    with col_cancel:
+        if st.button("Annuler"):
+            st.session_state["edit_product"] = None
+            st.rerun()
+
+
 # --- 1️⃣ Produits expirés ---
 st.header("⚠️ Produits qui expirent bientôt")
 
@@ -115,8 +150,7 @@ if data:
             st.rerun()
 
         if col5.button("✏️", key=f"edit_{p['nom']}"):
-            st.session_state["edit_product"] = p["nom"]
-            st.rerun()
+            edit_product_dialog(p)
 
         if col6.button("✅", key=f"consume_{p['nom']}"):
             remove_product(p["nom"])

@@ -79,16 +79,23 @@ def remove_product(nom: str) -> None:
 
 
 def update_product(
-    nom: str, new_quantite: int, new_date_expiration: str, new_notes: Optional[str]
+    nom: str,
+    new_quantite: int,
+    new_date_expiration: str,
+    new_notes: Optional[str] = None,
+    new_nom: Optional[str] = None,
 ) -> None:
-    """Update an existing product by name."""
+    """Update an existing product."""
     data = load_data()
-    for p in data:
-        if p["nom"] == nom:
-            p["quantite"] = new_quantite
-            p["date_expiration"] = new_date_expiration
-            p["notes"] = new_notes
+
+    for product in data:
+        if product["nom"] == nom:
+            product["nom"] = new_nom if new_nom and new_nom.strip() else nom
+            product["quantite"] = new_quantite
+            product["date_expiration"] = new_date_expiration
+            product["notes"] = new_notes
             break
+
     save_data(data)
 
 
