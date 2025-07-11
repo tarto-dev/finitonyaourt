@@ -69,15 +69,15 @@ streamlit run app.py
 
 ### 💡 Vue d'accueil
 
-![Accueil](assets/screenshot_home.png)
+![Accueil](https://github.com/user-attachments/assets/3c38430d-e520-4a2e-a880-24f05a327fb3)
 
 ### 🥗 Suggestions recettes
 
-![Recettes](assets/screenshot_recipes.png)
+![Recettes](https://github.com/user-attachments/assets/7a1163a0-62d8-492d-998e-49c4203d0149)
 
 ### 📷 Scan code-barres
 
-![Scan](assets/screenshot_scan.png)
+![Scan](https://github.com/user-attachments/assets/b4821264-5b3d-4769-802e-49d7eb15b3c4)
 
 ---
 
